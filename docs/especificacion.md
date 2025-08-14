@@ -10,7 +10,7 @@
 Ejemplo:
 
 ```
-test: añadido esqueleto de pruebas unitarias para transacciones by-jesusDiaz Co-authored-by-zelideeGuemez
+test: añadido esqueleto de pruebas unitarias para transacciones Co-authored-by-zelideeGuemez
 
-feat: arreglo inicial del proyecto by-zelideeGuemez
+feat: arreglo inicial del proyecto 
 ```

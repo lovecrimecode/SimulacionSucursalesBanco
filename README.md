@@ -2,13 +2,13 @@
 
 # Programación Paralela
 
-## Integrantes del equipo:
+## Integrantes del equipo: Grupo 1D
 
 ```
 | Zelidee Güémez Henríquez      | 2023-1706 |
-| Jesus Elias Diaz Feliz        |  |
-| Jayfry Manuel	Guerrero Váldez |  |
-| Gianrobert Ramirez Dominguez  |  |
+| Jesus Elias Diaz Feliz        | 2023-1683 |
+| Jayfry Manuel	Guerrero Váldez | 2023-1107 |
+| Gianrobert Ramirez Dominguez  | 2023-1743 |
 
 ```
 
