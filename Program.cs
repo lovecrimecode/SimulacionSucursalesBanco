@@ -1,0 +1,26 @@
+﻿namespace SimulacionSucursalesBanco
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Title = "Simulación de Sucursales Bancarias";
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            Console.WriteLine("=========================================");
+            Console.WriteLine("  SISTEMA DE SIMULACIÓN - BANCO ITLA");
+            Console.WriteLine("=========================================\n");
+            Console.ResetColor();
+
+            Console.WriteLine("Iniciando simulación...\n");
+
+            // Llamada al main lógico
+            MainApp app = new MainApp();
+            app.IniciarSimulacion();
+
+            Console.WriteLine("\nSimulación finalizada.");
+            Console.WriteLine("Presione cualquier tecla para salir...");
+            Console.ReadKey();
+        }
+    }
+}
