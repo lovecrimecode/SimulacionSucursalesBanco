@@ -1,38 +1,36 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace SimulacionSucursalesBanco
 {
     public class MainApp
     {
+        // ?? Este es el método que se llama desde Program
         public void IniciarSimulacion()
         {
-            // Simulación mínima mientras se implementa la lógica real
-            Task ventanilla = Task.Run(() => ProcesarVentanilla(1));
-            Task cajero = Task.Run(() => ProcesarCajero(1));
+            int sucursales = 2;
+            int ventanillasPorSucursal = 2;
+            int cajerosPorSucursal = 2;
+            int clientesTotales = 200;
+            int duracionSegundos = 20;
 
-            Task.WaitAll(ventanilla, cajero);
-        }
+            EstrategiaAtencion estrategia = EstrategiaAtencion.FIFO;
 
-        private void ProcesarVentanilla(int id)
-        {
-            for (int i = 1; i <= 5; i++)
-            {
-                Console.WriteLine($"[Ventanilla {id}] Atendiendo cliente {i}...");
-                Thread.Sleep(500); // Simula tiempo de atención
-            }
-            Console.WriteLine($"[Ventanilla {id}] Atención finalizada.");
-        }
+            Console.WriteLine("=== Simulación Bancaria Multi-Sucursal ===");
+            Console.WriteLine($"Sucursales: {sucursales}, Ventanillas/Sucursal: {ventanillasPorSucursal}, Cajeros/Sucursal: {cajerosPorSucursal}");
+            Console.WriteLine($"Estrategia: {estrategia}, Clientes a generar: {clientesTotales}, Duración: {duracionSegundos}s\n");
 
-        private void ProcesarCajero(int id)
-        {
-            for (int i = 1; i <= 3; i++)
-            {
-                Console.WriteLine($"[Cajero {id}] Procesando transacción {i}...");
-                Thread.Sleep(700); // Simula tiempo de operación
-            }
-            Console.WriteLine($"[Cajero {id}] Operaciones completadas.");
+            var simulador = new Simulador(
+                sucursales,
+                ventanillasPorSucursal,
+                cajerosPorSucursal,
+                estrategia,
+                clientesTotales,
+                TimeSpan.FromSeconds(duracionSegundos));
+
+            simulador.Iniciar();
+            simulador.Ejecutar();
+            simulador.Detener();
+
+            Console.WriteLine("\n=== Métricas ===");
+            simulador.ImprimirMetricasConsola();
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace SimulacionSucursalesBanco
+﻿
+using System;
+
+namespace SimulacionSucursalesBanco
 {
     class Program
     {
@@ -14,7 +17,7 @@
 
             Console.WriteLine("Iniciando simulación...\n");
 
-            // Llamada al main lógico
+            // Ahora solo llamas a tu MainApp con el nuevo método
             MainApp app = new MainApp();
             app.IniciarSimulacion();
 
