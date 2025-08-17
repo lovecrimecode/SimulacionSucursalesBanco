@@ -8,7 +8,7 @@ namespace SimulacionSucursalesBanco
         static void Main(string[] args)
         {
             Console.Title = "Simulación de Sucursales Bancarias";
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Blue;
 
             Console.WriteLine("=========================================");
             Console.WriteLine("  SISTEMA DE SIMULACIÓN - BANCO ITLA");
