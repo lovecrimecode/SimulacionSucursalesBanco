@@ -1,49 +1,40 @@
-﻿using System;
+﻿using SimulacionSucursalesBanco.src;
+
 
 namespace SimulacionSucursalesBanco
 {
-    public enum TipoCuenta
-    {
-        Ahorro = 1,
-        Corriente = 2
-    }
-
-    public enum TipoOperacion
-    {
-        Deposito = 1,
-        Retiro = 2,
-        Consulta = 3
-    }
-
     public sealed class Cliente
     {
         public int Id { get; }
-        public TipoCuenta TipoCuenta { get; }
-        public TipoOperacion Operacion { get; }
-        public decimal Monto { get; }
-        public bool Preferencial { get; } // prioridad
+        public bool Preferencial { get; } // prioridad en la cola
         public DateTime Llegada { get; }
         public DateTime? InicioAtencion { get; set; }
         public DateTime? FinAtencion { get; set; }
+
+        // El cliente está asociado a una cuenta
+        public Cuenta Cuenta { get; }
+
+        // La transacción que solicita
+        public Transaccion Transaccion { get; }
+
+        // A dónde quiere ir (cajero o ventanilla)
         public int IdSucursalDestino { get; }
-        public PuntoAtencion Destino { get; } // Ventanilla o Cajero
+        public PuntoAtencion Destino { get; }
 
         public TimeSpan TiempoEspera =>
             (InicioAtencion.HasValue ? InicioAtencion.Value : DateTime.UtcNow) - Llegada;
 
         public Cliente(
             int id,
-            TipoCuenta tipoCuenta,
-            TipoOperacion operacion,
-            decimal monto,
+            Cuenta cuenta,
+            Transaccion transaccion,
             bool preferencial,
             int idSucursalDestino,
             PuntoAtencion destino)
         {
             Id = id;
-            TipoCuenta = tipoCuenta;
-            Operacion = operacion;
-            Monto = monto;
+            Cuenta = cuenta ?? throw new ArgumentNullException(nameof(cuenta));
+            Transaccion = transaccion ?? throw new ArgumentNullException(nameof(transaccion));
             Preferencial = preferencial;
             Llegada = DateTime.UtcNow;
             IdSucursalDestino = idSucursalDestino;
@@ -51,7 +42,9 @@ namespace SimulacionSucursalesBanco
         }
 
         public override string ToString()
-            => $"Cliente#{Id} [{(Preferencial ? "PRIO" : "NOR")}] {Operacion} {Monto:C} ({TipoCuenta}) -> {Destino} Suc:{IdSucursalDestino}";
+            => $"Cliente#{Id} [{(Preferencial ? "PRIO" : "NOR")}] " +
+               $"{Transaccion.Tipo} {Transaccion.Monto:C} ({Cuenta.ToString}) -> " +
+               $"{Destino} Suc:{IdSucursalDestino}";
     }
 
     public enum PuntoAtencion

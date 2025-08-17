@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using SimulacionSucursalesBanco.src;
+using System;
 using System.Threading;
 
 namespace SimulacionSucursalesBanco
@@ -20,7 +20,7 @@ namespace SimulacionSucursalesBanco
             _ct = ct;
             _estrategia = estrategia;
             _thread = new Thread(WorkerLoop) { IsBackground = true, Name = $"Ventanilla-{sucursal.Id}-{id}" };
-            _rnd = new Random(seed ?? Environment.TickCount ^ id);
+            _rnd = new Random(seed ?? Environment.TickCount ^ (id * 13));
         }
 
         public void Start() => _thread.Start();
@@ -37,7 +37,7 @@ namespace SimulacionSucursalesBanco
 
                     cliente.InicioAtencion = DateTime.UtcNow;
 
-                    // Tiempo de servicio simulado (50–250 ms)
+                    // Simulación de servicio más lento que cajero (50–250 ms)
                     int servicioMs = _rnd.Next(50, 250);
                     Thread.Sleep(servicioMs);
 
@@ -57,20 +57,17 @@ namespace SimulacionSucursalesBanco
             }
         }
 
-        private bool Procesar(Cliente c)
+        private bool Procesar(Cliente cliente)
         {
-            switch (c.Operacion)
+            try
             {
-                case TipoOperacion.Deposito:
-                    _sucursal.ModificarFondos(c.Monto);
-                    return true;
-                case TipoOperacion.Retiro:
-                    return _sucursal.IntentarRetiro(c.Monto);
-                case TipoOperacion.Consulta:
-                    _ = _sucursal.Fondos; // leer saldo
-                    return true;
-                default:
-                    return false;
+                // Ejecutar la transacción que ya trae el cliente
+                cliente.Transaccion.Ejecutar();
+                return cliente.Transaccion.Estado == EstadoTransaccion.Completada;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

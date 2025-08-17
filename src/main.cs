@@ -2,7 +2,6 @@ namespace SimulacionSucursalesBanco
 {
     public class MainApp
     {
-        // ?? Este es el método que se llama desde Program
         public void IniciarSimulacion()
         {
             int sucursales = 2;
