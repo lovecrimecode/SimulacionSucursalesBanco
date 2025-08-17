@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimulacionSucursalesBanco.src;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -36,11 +37,10 @@ namespace SimulacionSucursalesBanco
             _clientesTotales = clientesTotales;
             _duracion = duracion;
 
+            // Crear sucursales
             for (int i = 0; i < _numSucursales; i++)
             {
-                // Fondos iniciales aleatorios (entre 50k y 120k)
-                decimal fondosIni = 50000m + (decimal)_rnd.Next(0, 70001);
-                _sucursales.Add(new Sucursal(i, fondosIni));
+                _sucursales.Add(new Sucursal(i, $"Sucursal-{i + 1}"));
             }
         }
 
@@ -49,10 +49,8 @@ namespace SimulacionSucursalesBanco
             var ct = _cts.Token;
 
             // Crear y lanzar ventanillas/cajeros
-            for (int s = 0; s < _numSucursales; s++)
+            foreach (var suc in _sucursales)
             {
-                var suc = _sucursales[s];
-
                 for (int v = 0; v < _ventanillasPorSucursal; v++)
                 {
                     var vent = new Ventanilla(v, suc, ct, _estrategia);
@@ -69,18 +67,32 @@ namespace SimulacionSucursalesBanco
             }
 
             // Generador de clientes
-            _generador = new Thread(GenerarClientesLoop) { IsBackground = true, Name = "Generador-Clientes" };
+            _generador = new Thread(GenerarClientesLoop)
+            { IsBackground = true, Name = "Generador-Clientes" };
             _generador.Start();
         }
 
         public void Ejecutar()
         {
-            // Corre hasta que pase el tiempo _duracion o se alcance el total de clientes
-            DateTime fin = DateTime.UtcNow + _duracion;
-            while (DateTime.UtcNow < fin && VolumenGenerado() < _clientesTotales)
+            DateTime finGeneracion = DateTime.UtcNow + _duracion;
+
+            // Esperar hasta generar todos los clientes o que pase el tiempo
+            while (VolumenGenerado() < _clientesTotales && DateTime.UtcNow < finGeneracion)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(50);
             }
+
+            // Esperar hasta que todas las colas estén vacías
+            bool colasVacias;
+            do
+            {
+                colasVacias = true;
+                foreach (var suc in _sucursales)
+                {
+                    colasVacias &= suc.ColasVacias();
+                }
+                Thread.Sleep(50);
+            } while (!colasVacias);
         }
 
         public void Detener()
@@ -94,40 +106,60 @@ namespace SimulacionSucursalesBanco
 
         private int VolumenGenerado() => _idClienteSeq;
 
+        private void MostrarClienteGenerado(Cliente c)
+        {
+            Console.WriteLine($"[Generado] Cliente #{c.Id} | Cuenta: {c.Cuenta.Tipo} | " +
+                              $"Transacción: {c.Transaccion.Tipo} {(c.Transaccion.Monto > 0 ? $"{c.Transaccion.Monto:C}" : "")} | " +
+                              $"Preferencial: {c.Preferencial} | Sucursal: {c.IdSucursalDestino} | Destino: {c.Destino}");
+        }
+
         private void GenerarClientesLoop()
         {
             int localId = 0;
             while (!_cts.IsCancellationRequested && localId < _clientesTotales)
             {
-                // Ritmo de llegada: entre 5 y 20 ms por cliente (alto tráfico)
-                int esperaMs = _rnd.Next(5, 20);
-                Thread.Sleep(esperaMs);
+                Thread.Sleep(_rnd.Next(5, 20));
 
-                int sucId = _rnd.Next(0, _numSucursales);
-                var suc = _sucursales[sucId];
+                var suc = _sucursales[_rnd.Next(_numSucursales)];
 
-                var destino = _rnd.NextDouble() < 0.55 ? PuntoAtencion.Cajero : PuntoAtencion.Ventanilla;
+                // Crear cuenta para el cliente
                 var tipoCuenta = _rnd.NextDouble() < 0.65 ? TipoCuenta.Ahorro : TipoCuenta.Corriente;
+                var cuenta = new Cuenta(Interlocked.Increment(ref _idClienteSeq), $"Cliente-{localId + 1}", tipoCuenta, 5000m);
+
+                // Elegir operación
+                double r = _rnd.NextDouble();
+                TipoTransaccion tipoTrans = r < 0.4 ? TipoTransaccion.Deposito
+                                       : (r < 0.8 ? TipoTransaccion.Retiro
+                                                  : TipoTransaccion.Consulta);
+
+                // Monto de la transacción
+                decimal monto = tipoTrans != TipoTransaccion.Consulta ? _rnd.Next(100, 10_001) : 0;
+
+                // Crear transacción
+                var transaccion = new Transaccion(tipoTrans, cuenta, monto);
 
                 // Preferencial ~ 15%
                 bool preferencial = _rnd.NextDouble() < 0.15;
 
-                // Operación: depósito 40%, retiro 40%, consulta 20%
-                double r = _rnd.NextDouble();
-                TipoOperacion op = r < 0.4 ? TipoOperacion.Deposito
-                                           : (r < 0.8 ? TipoOperacion.Retiro : TipoOperacion.Consulta);
+                // Destino: Cajero o Ventanilla
+                var destino = _rnd.NextDouble() < 0.55 ? PuntoAtencion.Cajero : PuntoAtencion.Ventanilla;
 
-                decimal monto = 0m;
-                if (op != TipoOperacion.Consulta)
-                {
-                    // Monto entre 100 y 10,000
-                    monto = _rnd.Next(100, 10_001);
-                }
+                // Crear cliente con cuenta y transacción ya listas
+                var cliente = new Cliente(
+                    Interlocked.Increment(ref _idClienteSeq),
+                    cuenta,
+                    transaccion,
+                    preferencial,
+                    suc.Id,
+                    destino
+                );
 
-                int id = Interlocked.Increment(ref _idClienteSeq);
-                var cliente = new Cliente(id, tipoCuenta, op, monto, preferencial, sucId, destino);
+                // Encolar el cliente en la sucursal
+                suc.RecibirCliente(cliente);
 
-                suc.EncolarCliente(cliente);
+                suc.RecibirCliente(cliente);
+                MostrarClienteGenerado(cliente);
+
                 localId++;
             }
         }
@@ -137,18 +169,20 @@ namespace SimulacionSucursalesBanco
             long totalProcesados = 0, totalExitos = 0, totalFallos = 0;
             double totalEsperaMs = 0, totalServicioMs = 0;
             long totalAtVentanilla = 0, totalAtCajero = 0;
+            long totalDepositos = 0, totalRetiros = 0, totalConsultas = 0;
             decimal totalFondos = 0;
+            int totalClientesCola = 0;
 
-            for (int i = 0; i < _sucursales.Count; i++)
+            foreach (var suc in _sucursales)
             {
-                var s = _sucursales[i];
-                var (p, e, f, esperaProm, servProm, atV, atC, fondos) = s.ObtenerMetricas();
+                var (p, e, f, esperaProm, servProm, atV, atC, depositos, retiros, consultas, fondos, clientesEnCola) = suc.ObtenerMetricas();
 
-                Console.WriteLine($"\nSucursal #{s.Id}");
-                Console.WriteLine($"  Procesados: {p}, Éxitos: {e}, Fallos: {f}");
-                Console.WriteLine($"  Espera promedio: {esperaProm:F1} ms");
-                Console.WriteLine($"  Servicio promedio: {servProm:F1} ms");
+                Console.WriteLine($"\nSucursal #{suc.Id}");
+                Console.WriteLine($"  Clientes procesados: {p}, Éxitos: {e}, Fallos: {f}");
+                Console.WriteLine($"  Espera promedio: {esperaProm:F1} ms, Servicio promedio: {servProm:F1} ms");
                 Console.WriteLine($"  Atenciones -> Ventanilla: {atV}, Cajero: {atC}");
+                Console.WriteLine($"  Operaciones -> Depósitos: {depositos}, Retiros: {retiros}, Consultas: {consultas}");
+                Console.WriteLine($"  Clientes aún en cola: {clientesEnCola}");
                 Console.WriteLine($"  Fondos finales: {fondos:C}");
 
                 totalProcesados += p;
@@ -158,10 +192,15 @@ namespace SimulacionSucursalesBanco
                 totalServicioMs += servProm * Math.Max(p, 1);
                 totalAtVentanilla += atV;
                 totalAtCajero += atC;
+                totalDepositos += depositos;
+                totalRetiros += retiros;
+                totalConsultas += consultas;
                 totalFondos += fondos;
+                totalClientesCola += clientesEnCola;
             }
 
-            int sucCount = Math.Max(_sucursales.Count, 1);
+
+
             double promEsperaGlobal = totalProcesados > 0 ? totalEsperaMs / totalProcesados : 0.0;
             double promServicioGlobal = totalProcesados > 0 ? totalServicioMs / totalProcesados : 0.0;
 
@@ -170,8 +209,10 @@ namespace SimulacionSucursalesBanco
             Console.WriteLine($"Espera global promedio: {promEsperaGlobal:F1} ms");
             Console.WriteLine($"Servicio global promedio: {promServicioGlobal:F1} ms");
             Console.WriteLine($"Atenciones -> Ventanilla: {totalAtVentanilla}, Cajero: {totalAtCajero}");
-            Console.WriteLine($"Suma de fondos finales (todas las sucursales): {totalFondos:C}");
+            Console.WriteLine($"Operaciones -> Depósitos: {totalDepositos}, Retiros: {totalRetiros}, Consultas: {totalConsultas}");
+            Console.WriteLine($"Clientes aún en cola: {totalClientesCola}");
+            Console.WriteLine($"Fondos totales finales: {totalFondos:C}");
         }
+
     }
 }
-

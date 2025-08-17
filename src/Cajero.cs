@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimulacionSucursalesBanco.src;
+using System;
 using System.Threading;
 
 namespace SimulacionSucursalesBanco
@@ -15,10 +16,14 @@ namespace SimulacionSucursalesBanco
         public Cajero(int id, Sucursal sucursal, CancellationToken ct, EstrategiaAtencion estrategia, int? seed = null)
         {
             _id = id;
-            _sucursal = sucursal;
+            _sucursal = sucursal ?? throw new ArgumentNullException(nameof(sucursal));
             _ct = ct;
             _estrategia = estrategia;
-            _thread = new Thread(WorkerLoop) { IsBackground = true, Name = $"Cajero-{sucursal.Id}-{id}" };
+            _thread = new Thread(WorkerLoop)
+            {
+                IsBackground = true,
+                Name = $"Cajero-{sucursal.Id}-{id}"
+            };
             _rnd = new Random(seed ?? Environment.TickCount ^ (id * 7));
         }
 
@@ -31,46 +36,42 @@ namespace SimulacionSucursalesBanco
             {
                 try
                 {
+                    // Tomar cliente desde la sucursal
                     Cliente? cliente = _sucursal.TomarClienteCajero(_estrategia, _ct);
                     if (cliente == null) continue;
 
                     cliente.InicioAtencion = DateTime.UtcNow;
 
-                    // Cajero: operaciones un poco más cortas (40–180 ms)
+                    // Simular tiempo de servicio (40–180 ms)
                     int servicioMs = _rnd.Next(40, 180);
                     Thread.Sleep(servicioMs);
 
+                    // Aquí procesamos la transacción asociada
                     bool exito = Procesar(cliente);
+
                     cliente.FinAtencion = DateTime.UtcNow;
 
+                    // Registrar resultado en la sucursal
                     _sucursal.RegistrarResultado(cliente, exito, PuntoAtencion.Cajero, servicioMs);
                 }
-                catch (OperationCanceledException)
-                {
-                    break;
-                }
-                catch (ObjectDisposedException)
-                {
-                    break;
-                }
+                catch (OperationCanceledException) { break; }
+                catch (ObjectDisposedException) { break; }
             }
         }
 
-        private bool Procesar(Cliente c)
+        private bool Procesar(Cliente cliente)
         {
-            switch (c.Operacion)
+            try
             {
-                case TipoOperacion.Deposito:
-                    _sucursal.ModificarFondos(c.Monto);
-                    return true;
-                case TipoOperacion.Retiro:
-                    return _sucursal.IntentarRetiro(c.Monto);
-                case TipoOperacion.Consulta:
-                    _ = _sucursal.Fondos;
-                    return true;
-                default:
-                    return false;
+                // El cliente ya trae su transacción lista para ejecutar
+                cliente.Transaccion.Ejecutar();
+                return cliente.Transaccion.Estado == EstadoTransaccion.Completada;
+            }
+            catch
+            {
+                return false;
             }
         }
+
     }
 }
