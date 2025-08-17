@@ -20,8 +20,8 @@ namespace SimulacionSucursalesBanco
             EstrategiaAtencion estrategia = estrategiaNum switch
             {
                 1 => EstrategiaAtencion.FIFO,
-                2 => EstrategiaAtencion.Prioridad,
-                3 => EstrategiaAtencion.Mixta,
+                //  2 => EstrategiaAtencion.Prioridad,
+                //  3 => EstrategiaAtencion.Mixta,
                 _ => EstrategiaAtencion.FIFO
             };
 
@@ -34,7 +34,7 @@ namespace SimulacionSucursalesBanco
                 cajerosPorSucursal,
                 estrategia,
                 clientesTotales,
-                TimeSpan.FromSeconds(duracionSegundos));
+                TimeSpan.FromSeconds(duracionSegundos)); 
 
             simulador.Iniciar();
             simulador.Ejecutar();
@@ -54,7 +54,7 @@ namespace SimulacionSucursalesBanco
             return valor;
         }
     }
-
+/*
     public static class TestUtils
     {
         public static void GuardarResultado(string nombreTest, string resultado)
@@ -63,5 +63,5 @@ namespace SimulacionSucursalesBanco
             string linea = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | {nombreTest} | {resultado}";
             File.AppendAllLines(ruta, new[] { linea });
         }
-    }
+    }*/
 }
