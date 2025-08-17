@@ -1,5 +1,4 @@
-﻿using SimulacionSucursalesBanco.src;
-using System;
+﻿using System;
 using System.Threading;
 
 namespace SimulacionSucursalesBanco
@@ -47,31 +46,32 @@ namespace SimulacionSucursalesBanco
                     Thread.Sleep(servicioMs);
 
                     // Aquí procesamos la transacción asociada
-                    bool exito = Procesar(cliente);
+                    bool exito = _sucursal.ProcesarTransaccion(cliente);
 
                     cliente.FinAtencion = DateTime.UtcNow;
 
                     // Registrar resultado en la sucursal
                     _sucursal.RegistrarResultado(cliente, exito, PuntoAtencion.Cajero, servicioMs);
+                    Console.WriteLine($"[Cajero {_id} Sucursal {_sucursal.Id}] Cliente #{cliente.Id} | {cliente.Transaccion.Tipo} | {(exito ? "Éxito" : "Falló")}");
                 }
                 catch (OperationCanceledException) { break; }
                 catch (ObjectDisposedException) { break; }
             }
         }
 
-        private bool Procesar(Cliente cliente)
-        {
-            try
-            {
-                // El cliente ya trae su transacción lista para ejecutar
-                cliente.Transaccion.Ejecutar();
-                return cliente.Transaccion.Estado == EstadoTransaccion.Completada;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //private bool Procesar(Cliente cliente)
+        //{
+        //    try
+        //    {
+        //        // El cliente ya trae su transacción lista para ejecutar
+        //        cliente.Transaccion.Ejecutar();
+        //        return cliente.Transaccion.Estado == EstadoTransaccion.Completada;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
     }
 }
