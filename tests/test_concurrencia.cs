@@ -12,6 +12,9 @@ public class ConcurrenciaTests
         decimal monto = 10m;
 
         Parallel.For(0, tareas, _ => cuenta.Depositar(monto));
-        Assert.Equal(tareas * monto, cuenta.ConsultarSaldo());
+        bool ok = cuenta.ConsultarSaldo() == tareas * monto;
+
+        TestUtils.GuardarResultado(nameof(DepositosConcurrentes_SaldoCorrecto), ok ? "OK" : "FALLÓ");
+        Assert.True(ok);
     }
 }
