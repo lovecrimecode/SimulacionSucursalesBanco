@@ -1,3 +1,5 @@
+using SimulacionSucursalesBanco.src.clases;
+
 namespace SimulacionSucursalesBanco
 {
     public interface IEstrategiaAtencion

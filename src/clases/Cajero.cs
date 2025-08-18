@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace SimulacionSucursalesBanco
+namespace SimulacionSucursalesBanco.src.clases
 {
     public sealed class Cajero
     {
@@ -23,7 +23,7 @@ namespace SimulacionSucursalesBanco
                 IsBackground = true,
                 Name = $"Cajero-{sucursal.Id}-{id}"
             };
-            _rnd = new Random(seed ?? Environment.TickCount ^ (id * 7));
+            _rnd = new Random(seed ?? Environment.TickCount ^ id * 7);
         }
 
         public void Start() => _thread.Start();

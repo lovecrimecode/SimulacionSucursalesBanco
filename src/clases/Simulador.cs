@@ -1,9 +1,8 @@
-﻿using SimulacionSucursalesBanco.src;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace SimulacionSucursalesBanco
+namespace SimulacionSucursalesBanco.src.clases
 {
     public sealed class Simulador
     {
@@ -135,8 +134,8 @@ namespace SimulacionSucursalesBanco
                 // Elegir operación
                 double r = _rnd.NextDouble();
                 TipoTransaccion tipoTrans = r < 0.4 ? TipoTransaccion.Deposito
-                                       : (r < 0.8 ? TipoTransaccion.Retiro
-                                                  : TipoTransaccion.Consulta);
+                                       : r < 0.8 ? TipoTransaccion.Retiro
+                                                  : TipoTransaccion.Consulta;
 
                 // Monto de la transacción
                 decimal monto = tipoTrans != TipoTransaccion.Consulta ? _rnd.Next(100, 10_001) : 0;

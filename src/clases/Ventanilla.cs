@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace SimulacionSucursalesBanco
+namespace SimulacionSucursalesBanco.src.clases
 {
     public sealed class Ventanilla
     {
@@ -19,7 +19,7 @@ namespace SimulacionSucursalesBanco
             _ct = ct;
             _estrategia = estrategia;
             _thread = new Thread(WorkerLoop) { IsBackground = true, Name = $"Ventanilla-{sucursal.Id}-{id}" };
-            _rnd = new Random(seed ?? Environment.TickCount ^ (id * 13));
+            _rnd = new Random(seed ?? Environment.TickCount ^ id * 13);
         }
 
         public void Start() => _thread.Start();

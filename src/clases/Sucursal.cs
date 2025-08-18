@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace SimulacionSucursalesBanco
+namespace SimulacionSucursalesBanco.src.clases
 {
     public enum EstrategiaAtencion
     {
