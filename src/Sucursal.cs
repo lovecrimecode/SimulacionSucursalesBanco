@@ -7,7 +7,9 @@ namespace SimulacionSucursalesBanco
     public enum EstrategiaAtencion
     {
         FIFO = 1,
-        PRIORIDAD = 2
+        PRIORIDAD = 2,
+        MIXTA = 3
+
     }
 
     public sealed class Sucursal
