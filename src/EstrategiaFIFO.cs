@@ -8,15 +8,13 @@ namespace SimulacionSucursalesBanco
 
         public void AgregarCliente(Cliente cliente)
         {
-            cola.Enqueue(cliente);
+            if (cliente != null)
+                cola.Enqueue(cliente);
         }
-
-        public Cliente AtenderCliente()
+        public Cliente? AtenderCliente()
         {
-            if (cola.Count == 0) return null;
-            return cola.Dequeue();
+            return cola.Count > 0 ? cola.Dequeue() : null;
         }
-
         public bool TieneClientes()
         {
             return cola.Count > 0;

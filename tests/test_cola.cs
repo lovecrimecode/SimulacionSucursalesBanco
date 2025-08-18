@@ -39,5 +39,20 @@ namespace SimulacionSucursalesBanco
             TestUtils.GuardarResultado(nameof(Prioridad_ClientePreferencialPrimero), ok ? "OK" : "FALLÓ");
             Assert.True(ok);
         }
+
+        [Fact]
+        public void Mixta_ClienteCorrecto()
+        {
+            var sucursal = new Sucursal(1, "Sucursal-1");
+            var cuenta = new Cuenta(1, "Test", TipoCuenta.Ahorro, 1000m);
+            var transaccion = new Transaccion(TipoTransaccion.Deposito, cuenta, 500m);
+            var cliente = new Cliente(1, cuenta, transaccion, false, 1, PuntoAtencion.Ventanilla);
+
+            sucursal.RecibirCliente(cliente);
+            bool ok = sucursal.TomarClienteVentanilla(EstrategiaAtencion.Mixta, CancellationToken.None) == cliente;
+
+            TestUtils.GuardarResultado(nameof(Mixta_ClienteCorrecto), ok ? "OK" : "FALLÓ");
+            Assert.True(ok);
+        }
     }
 }

@@ -40,7 +40,8 @@ namespace SimulacionSucursalesBanco
                     int servicioMs = _rnd.Next(50, 250);
                     Thread.Sleep(servicioMs);
 
-                    bool exito = _sucursal.ProcesarTransaccion(cliente); // Usar método de Sucursal
+                    bool exito = Procesar(cliente);
+
                     cliente.FinAtencion = DateTime.UtcNow;
 
                     _sucursal.RegistrarResultado(cliente, exito, PuntoAtencion.Ventanilla, servicioMs);
@@ -57,18 +58,18 @@ namespace SimulacionSucursalesBanco
             }
         }
 
-        //private bool Procesar(Cliente cliente)
-        //{
-        //    try
-        //    {
-        //        // Ejecutar la transacción que ya trae el cliente
-        //        cliente.Transaccion.Ejecutar();
-        //        return cliente.Transaccion.Estado == EstadoTransaccion.Completada;
-        //    }
-        //    catch
-        //    {
-        //        return false;
-        //    }
-        //}
+        private bool Procesar(Cliente cliente)
+        {
+            try
+            {
+                // Ejecutar la transacción que ya trae el cliente
+                cliente.Transaccion.Ejecutar();
+                return cliente.Transaccion.Estado == EstadoTransaccion.Completada;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

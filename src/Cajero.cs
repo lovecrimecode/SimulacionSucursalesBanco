@@ -46,7 +46,7 @@ namespace SimulacionSucursalesBanco
                     Thread.Sleep(servicioMs);
 
                     // Aquí procesamos la transacción asociada
-                    bool exito = _sucursal.ProcesarTransaccion(cliente);
+                    bool exito = Procesar(cliente);
 
                     cliente.FinAtencion = DateTime.UtcNow;
 
@@ -59,19 +59,19 @@ namespace SimulacionSucursalesBanco
             }
         }
 
-        //private bool Procesar(Cliente cliente)
-        //{
-        //    try
-        //    {
-        //        // El cliente ya trae su transacción lista para ejecutar
-        //        cliente.Transaccion.Ejecutar();
-        //        return cliente.Transaccion.Estado == EstadoTransaccion.Completada;
-        //    }
-        //    catch
-        //    {
-        //        return false;
-        //    }
-        //}
+        private bool Procesar(Cliente cliente)
+        {
+            try
+            {
+                // El cliente ya trae su transacción lista para ejecutar
+                cliente.Transaccion.Ejecutar();
+                return cliente.Transaccion.Estado == EstadoTransaccion.Completada;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
     }
 }

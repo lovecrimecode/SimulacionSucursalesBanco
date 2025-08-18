@@ -1,13 +1,23 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 namespace SimulacionSucursalesBanco
 {
     public class MainApp
     {
         public void IniciarSimulacion()
-        {
-            Console.WriteLine("=== Simulación Bancaria Multi-Sucursal ===");
+        { 
+            Console.ForegroundColor = ConsoleColor.Blue;
+
+            Console.WriteLine("=========================================");
+            Console.WriteLine("  SIMULACION DE SUCURSALES DE BANCO   ");
+            Console.WriteLine("=========================================\n");
+            Console.ResetColor();
+
+
+            Console.WriteLine("=== Iniciando la Simulacion Bancaria Multi-Sucursal ===");
 
             int sucursales = LeerInt("Cantidad de sucursales (ej: 1, 3, 5): ");
             int ventanillasPorSucursal = LeerInt("Ventanillas por sucursal (ej: 2, 4): ");
@@ -34,7 +44,7 @@ namespace SimulacionSucursalesBanco
                 cajerosPorSucursal,
                 estrategia,
                 clientesTotales,
-                TimeSpan.FromSeconds(duracionSegundos)); 
+                TimeSpan.FromSeconds(duracionSegundos));
 
             simulador.Iniciar();
             simulador.Ejecutar();
@@ -42,6 +52,39 @@ namespace SimulacionSucursalesBanco
 
             Console.WriteLine("\n=== Métricas ===");
             simulador.ImprimirMetricasConsola();
+            GuardarMetricas(simulador, estrategia);
+        }
+
+        private void GuardarMetricas(Simulador simulador, EstrategiaAtencion estrategia)
+        {
+            string ruta = Path.Combine("metrics", $"estrategia_{estrategia}.txt");
+            string? carpeta = Path.GetDirectoryName(ruta);
+            if (!string.IsNullOrEmpty(carpeta))
+                Directory.CreateDirectory(carpeta);
+            var clientesAtendidos = new List<Cliente>();
+            var sucursales = (List<Sucursal>)simulador.GetType()
+                .GetField("_sucursales", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(simulador);
+            foreach (var suc in sucursales)
+            {
+                clientesAtendidos.AddRange(suc.ObtenerClientesAtendidos());
+            }
+            var calculadora = new CalculadoraMetricas(clientesAtendidos);
+            calculadora.GuardarMetricasEnArchivo(ruta);
+            using (var writer = new StreamWriter(ruta, true))
+            {
+                writer.WriteLine($"Simulación - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                foreach (var suc in sucursales)
+                {
+                    var (p, e, f, esperaProm, servProm, atV, atC, depositos, retiros, consultas, fondos, clientesEnCola) = suc.ObtenerMetricas();
+                    writer.WriteLine($"Sucursal #{suc.Id}");
+                    writer.WriteLine($"Clientes procesados: {p}, Éxitos: {e}, Fallos: {f}");
+                    writer.WriteLine($"Espera promedio: {esperaProm:F1} ms, Servicio promedio: {servProm:F1} ms");
+                    writer.WriteLine($"Atenciones -> Ventanilla: {atV}, Cajero: {atC}");
+                    writer.WriteLine($"Operaciones -> Depósitos: {depositos}, Retiros: {retiros}, Consultas: {consultas}");
+                    writer.WriteLine($"Clientes en cola: {clientesEnCola}, Fondos: {fondos:C}");
+                }
+            }
         }
 
         private int LeerInt(string mensaje)

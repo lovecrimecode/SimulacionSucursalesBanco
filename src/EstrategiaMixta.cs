@@ -23,7 +23,7 @@ namespace SimulacionSucursalesBanco
         }
 
         // Atender al siguiente cliente según la estrategia mixta
-        public Cliente AtenderCliente()
+        public Cliente? AtenderCliente()
         {
             // Prioridad a clientes preferenciales
             if (estrategiaPrioridad.CantidadEnCola() > 0)
