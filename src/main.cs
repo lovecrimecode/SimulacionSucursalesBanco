@@ -7,16 +7,16 @@ namespace SimulacionSucursalesBanco
     {
         public void IniciarSimulacion()
         {
-            Console.WriteLine("=== Simulaci髇 Bancaria Multi-Sucursal ===");
+            Console.WriteLine("=== Simulaci贸n Bancaria Multi-Sucursal ===");
 
             int sucursales = LeerInt("Cantidad de sucursales (ej: 1, 3, 5): ");
             int ventanillasPorSucursal = LeerInt("Ventanillas por sucursal (ej: 2, 4): ");
             int cajerosPorSucursal = LeerInt("Cajeros por sucursal (ej: 1, 2): ");
             int clientesTotales = LeerInt("Clientes simulados (ej: 20, 50, 100): ");
-            int duracionSegundos = LeerInt("Duraci髇 de la simulaci髇 en segundos (ej: 10, 20, 60): ");
+            int duracionSegundos = LeerInt("Duraci贸n de la simulaci贸n en segundos (ej: 10, 20, 60): ");
 
-            Console.WriteLine("Estrategia de atenci髇 (1=FIFO, 2=Prioridad, 3=Mixta): ");
-            int estrategiaNum = LeerInt("Seleccione opci髇: ");
+            Console.WriteLine("Estrategia de atenci贸n (1=FIFO, 2=Prioridad, 3=Mixta): ");
+            int estrategiaNum = LeerInt("Seleccione opci贸n: ");
             EstrategiaAtencion estrategia = estrategiaNum switch
             {
                 1 => EstrategiaAtencion.FIFO,
@@ -26,7 +26,7 @@ namespace SimulacionSucursalesBanco
             };
 
             Console.WriteLine($"\nSucursales: {sucursales}, Ventanillas/Sucursal: {ventanillasPorSucursal}, Cajeros/Sucursal: {cajerosPorSucursal}");
-            Console.WriteLine($"Estrategia: {estrategia}, Clientes a generar: {clientesTotales}, Duraci髇: {duracionSegundos}s\n");
+            Console.WriteLine($"Estrategia: {estrategia}, Clientes a generar: {clientesTotales}, Duraci贸n: {duracionSegundos}s\n");
 
             var simulador = new Simulador(
                 sucursales,
@@ -40,7 +40,7 @@ namespace SimulacionSucursalesBanco
             simulador.Ejecutar();
             simulador.Detener();
 
-            Console.WriteLine("\n=== M閠ricas ===");
+            Console.WriteLine("\n=== M茅tricas ===");
             simulador.ImprimirMetricasConsola();
         }
 
