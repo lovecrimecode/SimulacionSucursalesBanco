@@ -82,6 +82,8 @@ namespace SimulacionSucursalesBanco
                 Thread.Sleep(50);
             }
 
+            DateTime finMaximo = DateTime.UtcNow + TimeSpan.FromSeconds(30); // Límite de 30 segundos
+
             // Esperar hasta que todas las colas estén vacías
             bool colasVacias;
             do
@@ -92,7 +94,11 @@ namespace SimulacionSucursalesBanco
                     colasVacias &= suc.ColasVacias();
                 }
                 Thread.Sleep(50);
-            } while (!colasVacias);
+            } while (!colasVacias && DateTime.UtcNow < finMaximo);
+            if (!colasVacias)
+            {
+                Console.WriteLine("Advertencia: La simulación terminó con clientes aún en cola.");
+            }
         }
 
         public void Detener()
@@ -156,8 +162,6 @@ namespace SimulacionSucursalesBanco
 
                 // Encolar el cliente en la sucursal
                 suc.RecibirCliente(cliente);
-
-                suc.RecibirCliente(cliente);
                 MostrarClienteGenerado(cliente);
 
                 localId++;
@@ -198,8 +202,6 @@ namespace SimulacionSucursalesBanco
                 totalFondos += fondos;
                 totalClientesCola += clientesEnCola;
             }
-
-
 
             double promEsperaGlobal = totalProcesados > 0 ? totalEsperaMs / totalProcesados : 0.0;
             double promServicioGlobal = totalProcesados > 0 ? totalServicioMs / totalProcesados : 0.0;
