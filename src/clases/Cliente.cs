@@ -1,10 +1,6 @@
-using SimulacionSucursalesBanco.src;
+using SimulacionSucursalesBanco;
 
-
-namespace SimulacionSucursalesBanco
-=======
 ﻿namespace SimulacionSucursalesBanco
->>>>>>> Stashed changes:src/clases/Cliente.cs
 {
     public sealed class Cliente
     {
