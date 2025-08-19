@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace SimulacionSucursalesBanco.src.clases
+namespace SimulacionSucursalesBanco
 {
     public sealed class Simulador
     {

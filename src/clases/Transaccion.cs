@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimulacionSucursalesBanco.src.clases
+namespace SimulacionSucursalesBanco
 {
     public enum TipoTransaccion
     {

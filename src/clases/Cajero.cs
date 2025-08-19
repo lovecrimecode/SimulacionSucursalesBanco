@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace SimulacionSucursalesBanco.src.clases
+namespace SimulacionSucursalesBanco
 {
     public sealed class Cajero
     {

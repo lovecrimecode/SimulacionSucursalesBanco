@@ -1,4 +1,4 @@
-﻿using SimulacionSucursalesBanco.src.clases;
+﻿using SimulacionSucursalesBanco;
 using System.Threading;
 using Xunit;
 

@@ -1,5 +1,5 @@
 ﻿using SimulacionSucursalesBanco;
-using SimulacionSucursalesBanco.src.clases;
+using SimulacionSucursalesBanco;
 using Xunit;
 
 namespace SimulacionSucursalesBanco
