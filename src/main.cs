@@ -1,36 +1,43 @@
-<<<<<<< Updated upstream
-=======
 using SimulacionSucursalesBanco;
->>>>>>> Stashed changes
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 namespace SimulacionSucursalesBanco
 {
     public class MainApp
     {
         public void IniciarSimulacion()
-        {
-            Console.WriteLine("=== Simulaci髇 Bancaria Multi-Sucursal ===");
+        { 
+            Console.ForegroundColor = ConsoleColor.Blue;
+
+            Console.WriteLine("=========================================");
+            Console.WriteLine("  SIMULACION DE SUCURSALES DE BANCO   ");
+            Console.WriteLine("=========================================\n");
+            Console.ResetColor();
+
+
+            Console.WriteLine("=== Iniciando la Simulacion Bancaria Multi-Sucursal ===");
 
             int sucursales = LeerInt("Cantidad de sucursales (ej: 1, 3, 5): ");
             int ventanillasPorSucursal = LeerInt("Ventanillas por sucursal (ej: 2, 4): ");
             int cajerosPorSucursal = LeerInt("Cajeros por sucursal (ej: 1, 2): ");
             int clientesTotales = LeerInt("Clientes simulados (ej: 20, 50, 100): ");
-            int duracionSegundos = LeerInt("Duraci髇 de la simulaci髇 en segundos (ej: 10, 20, 60): ");
+            int duracionSegundos = LeerInt("Duraci贸n de la simulaci贸n en segundos (ej: 10, 20, 60): ");
 
-            Console.WriteLine("Estrategia de atenci髇 (1=FIFO, 2=Prioridad, 3=Mixta): ");
-            int estrategiaNum = LeerInt("Seleccione opci髇: ");
+            Console.WriteLine("Estrategia de atenci贸n (1=FIFO, 2=Prioridad, 3=Mixta): ");
+            int estrategiaNum = LeerInt("Seleccione opci贸n: ");
             EstrategiaAtencion estrategia = estrategiaNum switch
             {
                 1 => EstrategiaAtencion.FIFO,
-                //  2 => EstrategiaAtencion.Prioridad,
-                //  3 => EstrategiaAtencion.Mixta,
+                2 => EstrategiaAtencion.Prioridad,
+                3 => EstrategiaAtencion.Mixta,
                 _ => EstrategiaAtencion.FIFO
             };
 
             Console.WriteLine($"\nSucursales: {sucursales}, Ventanillas/Sucursal: {ventanillasPorSucursal}, Cajeros/Sucursal: {cajerosPorSucursal}");
-            Console.WriteLine($"Estrategia: {estrategia}, Clientes a generar: {clientesTotales}, Duraci髇: {duracionSegundos}s\n");
+            Console.WriteLine($"Estrategia: {estrategia}, Clientes a generar: {clientesTotales}, Duraci贸n: {duracionSegundos}s\n");
 
             var simulador = new Simulador(
                 sucursales,
@@ -38,14 +45,47 @@ namespace SimulacionSucursalesBanco
                 cajerosPorSucursal,
                 estrategia,
                 clientesTotales,
-                TimeSpan.FromSeconds(duracionSegundos)); 
+                TimeSpan.FromSeconds(duracionSegundos));
 
             simulador.Iniciar();
             simulador.Ejecutar();
             simulador.Detener();
 
-            Console.WriteLine("\n=== M閠ricas ===");
+            Console.WriteLine("\n=== M茅tricas ===");
             simulador.ImprimirMetricasConsola();
+            GuardarMetricas(simulador, estrategia);
+        }
+
+        private void GuardarMetricas(Simulador simulador, EstrategiaAtencion estrategia)
+        {
+            string ruta = Path.Combine("metrics", $"estrategia_{estrategia}.txt");
+            string? carpeta = Path.GetDirectoryName(ruta);
+            if (!string.IsNullOrEmpty(carpeta))
+                Directory.CreateDirectory(carpeta);
+            var clientesAtendidos = new List<Cliente>();
+            var sucursales = (List<Sucursal>)simulador.GetType()
+                .GetField("_sucursales", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(simulador);
+            foreach (var suc in sucursales)
+            {
+                clientesAtendidos.AddRange(suc.ObtenerClientesAtendidos());
+            }
+            var calculadora = new CalculadoraMetricas(clientesAtendidos);
+            calculadora.GuardarMetricasEnArchivo(ruta);
+            using (var writer = new StreamWriter(ruta, true))
+            {
+                writer.WriteLine($"Simulaci贸n - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                foreach (var suc in sucursales)
+                {
+                    var (p, e, f, esperaProm, servProm, atV, atC, depositos, retiros, consultas, fondos, clientesEnCola) = suc.ObtenerMetricas();
+                    writer.WriteLine($"Sucursal #{suc.Id}");
+                    writer.WriteLine($"Clientes procesados: {p}, 脡xitos: {e}, Fallos: {f}");
+                    writer.WriteLine($"Espera promedio: {esperaProm:F1} ms, Servicio promedio: {servProm:F1} ms");
+                    writer.WriteLine($"Atenciones -> Ventanilla: {atV}, Cajero: {atC}");
+                    writer.WriteLine($"Operaciones -> Dep贸sitos: {depositos}, Retiros: {retiros}, Consultas: {consultas}");
+                    writer.WriteLine($"Clientes en cola: {clientesEnCola}, Fondos: {fondos:C}");
+                }
+            }
         }
 
         private int LeerInt(string mensaje)
@@ -58,14 +98,4 @@ namespace SimulacionSucursalesBanco
             return valor;
         }
     }
-/*
-    public static class TestUtils
-    {
-        public static void GuardarResultado(string nombreTest, string resultado)
-        {
-            string ruta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "test_results.txt");
-            string linea = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | {nombreTest} | {resultado}";
-            File.AppendAllLines(ruta, new[] { linea });
-        }
-    }*/
 }

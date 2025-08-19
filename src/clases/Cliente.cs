@@ -1,5 +1,4 @@
-<<<<<<< Updated upstream:src/Cliente.cs
-﻿using SimulacionSucursalesBanco.src;
+using SimulacionSucursalesBanco.src;
 
 
 namespace SimulacionSucursalesBanco

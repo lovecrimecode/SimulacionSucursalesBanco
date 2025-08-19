@@ -1,5 +1,4 @@
-﻿using SimulacionSucursalesBanco.src;
-using System;
+﻿using System;
 
 namespace SimulacionSucursalesBanco
 {

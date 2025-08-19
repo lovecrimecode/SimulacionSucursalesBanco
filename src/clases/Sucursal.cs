@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace SimulacionSucursalesBanco
@@ -7,7 +8,8 @@ namespace SimulacionSucursalesBanco
     public enum EstrategiaAtencion
     {
         FIFO = 1,
-        PRIORIDAD = 2
+        Prioridad = 2,
+        Mixta = 3
     }
 
     public sealed class Sucursal
@@ -42,6 +44,8 @@ namespace SimulacionSucursalesBanco
 
         private readonly object _lockFondos = new object();
 
+        private readonly List<Cliente> _clientesAtendidos = new List<Cliente>();
+        private readonly object _lockMetricas = new object();
 
         public Sucursal(int id, string nombre)
         {
@@ -67,7 +71,12 @@ namespace SimulacionSucursalesBanco
 
         public Cliente? TomarClienteVentanilla(EstrategiaAtencion estrategia, CancellationToken ct)
         {
-            if (estrategia == EstrategiaAtencion.PRIORIDAD)
+            if (estrategia == EstrategiaAtencion.Mixta)
+            {
+                if (new Random().NextDouble() < 0.5 && _colaVentanillaPrio.TryTake(out var prio, 5, ct)) return prio;
+                return _colaVentanilla.Take(ct);
+            }
+            else if (estrategia == EstrategiaAtencion.Prioridad)
             {
                 if (_colaVentanillaPrio.TryTake(out var prio, 5, ct)) return prio;
                 return _colaVentanilla.Take(ct);
@@ -77,7 +86,12 @@ namespace SimulacionSucursalesBanco
 
         public Cliente? TomarClienteCajero(EstrategiaAtencion estrategia, CancellationToken ct)
         {
-            if (estrategia == EstrategiaAtencion.PRIORIDAD)
+            if (estrategia == EstrategiaAtencion.Mixta)
+            {
+                if (new Random().NextDouble() < 0.5 && _colaCajeroPrio.TryTake(out var prio, 5, ct)) return prio;
+                return _colaCajero.Take(ct);
+            }
+            else if (estrategia == EstrategiaAtencion.Prioridad)
             {
                 if (_colaCajeroPrio.TryTake(out var prio, 5, ct)) return prio;
                 return _colaCajero.Take(ct);
@@ -128,6 +142,8 @@ namespace SimulacionSucursalesBanco
                     Interlocked.Increment(ref _consultas);
                     break;
             }
+
+            lock (_lockMetricas) { _clientesAtendidos.Add(c); }
         }
 
         public (long procesados, long exitos, long fallos,
@@ -146,6 +162,14 @@ namespace SimulacionSucursalesBanco
                     _atencionesVentanilla, _atencionesCajero,
                     _depositos, _retiros, _consultas,
                     _fondos, clientesEnCola);
+        }
+
+        public List<Cliente> ObtenerClientesAtendidos()
+        {
+            lock (_lockMetricas)
+            {
+                return new List<Cliente>(_clientesAtendidos);
+            }
         }
 
         #endregion

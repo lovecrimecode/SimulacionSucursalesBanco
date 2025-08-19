@@ -4,12 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-<<<<<<< Updated upstream:src/Cuenta.cs
-namespace SimulacionSucursalesBanco.src
-=======
-namespace SimulacionSucursalesBanco
->>>>>>> Stashed changes:src/clases/Cuenta.cs
-{
+namespace SimulacionSucursalesBanco {
     public enum TipoCuenta
     {
         Ahorro,
