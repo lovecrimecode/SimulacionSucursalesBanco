@@ -38,7 +38,7 @@ namespace SimulacionSucursalesBanco
         public int Id { get; }
         public string Nombre { get; }
 
-        // Fondos totales acumulados de todos los clientes (puede ajustarse según modelo)
+        // Fondos totales acumulados de todos los clientes
         private decimal _fondos;
         public decimal Fondos => _fondos;
 
@@ -125,7 +125,7 @@ namespace SimulacionSucursalesBanco
             }
 
             Interlocked.Add(ref _tiempoServicioAcumMs, servicioMs);
-
+            
 
             // Contadores por tipo de transacción
             switch (c.Transaccion.Tipo)
