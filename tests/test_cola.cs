@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿using SimulacionSucursalesBanco.src;
+=======
+﻿using SimulacionSucursalesBanco;
+>>>>>>> Stashed changes
 using System.Threading;
 using Xunit;
 

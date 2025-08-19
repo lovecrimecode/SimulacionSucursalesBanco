@@ -1,3 +1,7 @@
+<<<<<<< Updated upstream
+=======
+using SimulacionSucursalesBanco;
+>>>>>>> Stashed changes
 using System;
 using System.IO;
 

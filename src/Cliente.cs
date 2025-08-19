@@ -1,7 +1,11 @@
+<<<<<<< Updated upstream:src/Cliente.cs
 ﻿using SimulacionSucursalesBanco.src;
 
 
 namespace SimulacionSucursalesBanco
+=======
+﻿namespace SimulacionSucursalesBanco
+>>>>>>> Stashed changes:src/clases/Cliente.cs
 {
     public sealed class Cliente
     {

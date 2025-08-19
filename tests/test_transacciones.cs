@@ -1,5 +1,9 @@
 ﻿using SimulacionSucursalesBanco;
+<<<<<<< Updated upstream
 using SimulacionSucursalesBanco.src;
+=======
+using SimulacionSucursalesBanco;
+>>>>>>> Stashed changes
 using Xunit;
 
 namespace SimulacionSucursalesBanco
