@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace SimulacionSucursalesBanco.src.clases
+namespace SimulacionSucursalesBanco
 {
     public enum EstrategiaAtencion
     {
@@ -38,7 +38,7 @@ namespace SimulacionSucursalesBanco.src.clases
         public int Id { get; }
         public string Nombre { get; }
 
-        // Fondos totales acumulados de todos los clientes (puede ajustarse según modelo)
+        // Fondos totales acumulados de todos los clientes
         private decimal _fondos;
         public decimal Fondos => _fondos;
 
@@ -109,6 +109,36 @@ namespace SimulacionSucursalesBanco.src.clases
 
         #region Registro de métricas
 
+        public bool ProcesarTransaccion(Cliente c)
+        {
+            lock (_lockFondos)
+            {
+                bool exito = false;
+                switch (c.Transaccion.Tipo)
+                {
+                    case TipoTransaccion.Deposito:
+                        if (c.Cuenta.Depositar(c.Transaccion.Monto))
+                        {
+                            _fondos += c.Transaccion.Monto;
+                            exito = true;
+                        }
+                        break;
+                    case TipoTransaccion.Retiro:
+                        if (c.Cuenta.Retirar(c.Transaccion.Monto) && _fondos >= c.Transaccion.Monto)
+                        {
+                            _fondos -= c.Transaccion.Monto;
+                            exito = true;
+                        }
+                        break;
+                    case TipoTransaccion.Consulta:
+                        c.Cuenta.ConsultarSaldo();
+                        exito = true;
+                        break;
+                }
+                return exito;
+            }
+        }
+
         public void RegistrarResultado(Cliente c, bool exito, PuntoAtencion donde, int servicioMs)
         {
             Interlocked.Increment(ref _procesados);
@@ -128,22 +158,25 @@ namespace SimulacionSucursalesBanco.src.clases
 
 
             // Contadores por tipo de transacción
-            switch (c.Transaccion.Tipo)
+            if (exito)
             {
-                case TipoTransaccion.Deposito:
-                    Interlocked.Increment(ref _depositos);
-                    lock (_lockFondos) { _fondos += c.Transaccion.Monto; }
-                    break;
-                case TipoTransaccion.Retiro:
-                    Interlocked.Increment(ref _retiros);
-                    lock (_lockFondos) { _fondos -= c.Transaccion.Monto; }
-                    break;
-                case TipoTransaccion.Consulta:
-                    Interlocked.Increment(ref _consultas);
-                    break;
-            }
+                switch (c.Transaccion.Tipo)
+                {
+                    case TipoTransaccion.Deposito:
+                        Interlocked.Increment(ref _depositos);
+                        lock (_lockFondos) { _fondos += c.Transaccion.Monto; }
+                        break;
+                    case TipoTransaccion.Retiro:
+                        Interlocked.Increment(ref _retiros);
+                        lock (_lockFondos) { _fondos -= c.Transaccion.Monto; }
+                        break;
+                    case TipoTransaccion.Consulta:
+                        Interlocked.Increment(ref _consultas);
+                        break;
+                }
 
-            lock (_lockMetricas) { _clientesAtendidos.Add(c); }
+                lock (_lockMetricas) { _clientesAtendidos.Add(c); }
+            }
         }
 
         public (long procesados, long exitos, long fallos,

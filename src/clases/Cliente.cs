@@ -1,4 +1,6 @@
-﻿namespace SimulacionSucursalesBanco.src.clases
+using SimulacionSucursalesBanco;
+
+﻿namespace SimulacionSucursalesBanco
 {
     public sealed class Cliente
     {

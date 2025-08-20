@@ -1,13 +1,16 @@
 using System;
 using System.IO;
 
-public static class TestUtils
+namespace SimulacionSucursalesBanco
 {
-    public static void GuardarResultado(string nombreTest, string resultado)
+    public static class TestUtils
     {
-        string ruta = Path.Combine("tests", "test_results.txt");
-        Directory.CreateDirectory(Path.GetDirectoryName(ruta));
-        string linea = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | {nombreTest} | {resultado}";
-        File.AppendAllLines(ruta, new[] { linea });
+        public static void GuardarResultado(string nombreTest, string resultado)
+        {
+            string ruta = Path.Combine("tests", "test_results.txt");
+            Directory.CreateDirectory(Path.GetDirectoryName(ruta));
+            string linea = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | {nombreTest} | {resultado}";
+            File.AppendAllLines(ruta, new[] { linea });
+        }
     }
 }

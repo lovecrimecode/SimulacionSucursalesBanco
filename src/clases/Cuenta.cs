@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimulacionSucursalesBanco.src.clases
-{
+namespace SimulacionSucursalesBanco {
     public enum TipoCuenta
     {
         Ahorro,

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace SimulacionSucursalesBanco.src.clases
+namespace SimulacionSucursalesBanco
 {
     public sealed class Simulador
     {
@@ -12,6 +12,7 @@ namespace SimulacionSucursalesBanco.src.clases
         private readonly EstrategiaAtencion _estrategia;
         private readonly int _clientesTotales;
         private readonly TimeSpan _duracion;
+        private readonly int _maxProcesadores;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly List<Sucursal> _sucursales = new List<Sucursal>();
         private readonly List<Ventanilla> _ventanillas = new List<Ventanilla>();
@@ -21,13 +22,7 @@ namespace SimulacionSucursalesBanco.src.clases
         private int _idClienteSeq = 0;
         private readonly Random _rnd = new Random();
 
-        public Simulador(
-            int numSucursales,
-            int ventanillasPorSucursal,
-            int cajerosPorSucursal,
-            EstrategiaAtencion estrategia,
-            int clientesTotales,
-            TimeSpan duracion)
+        public Simulador(int numSucursales, int ventanillasPorSucursal, int cajerosPorSucursal, EstrategiaAtencion estrategia, int clientesTotales, TimeSpan duracion, int maxProcesadores)
         {
             _numSucursales = numSucursales;
             _ventanillasPorSucursal = ventanillasPorSucursal;
@@ -35,6 +30,7 @@ namespace SimulacionSucursalesBanco.src.clases
             _estrategia = estrategia;
             _clientesTotales = clientesTotales;
             _duracion = duracion;
+            _maxProcesadores = maxProcesadores;
 
             // Crear sucursales
             for (int i = 0; i < _numSucursales; i++)
@@ -45,6 +41,7 @@ namespace SimulacionSucursalesBanco.src.clases
 
         public void Iniciar()
         {
+            ThreadPool.SetMaxThreads(_maxProcesadores, _maxProcesadores);
             var ct = _cts.Token;
 
             // Crear y lanzar ventanillas/cajeros
@@ -107,13 +104,14 @@ namespace SimulacionSucursalesBanco.src.clases
 
             foreach (var v in _ventanillas) v.Join();
             foreach (var c in _cajeros) c.Join();
+            _cts.Dispose();
         }
 
         private int VolumenGenerado() => _idClienteSeq;
 
         private void MostrarClienteGenerado(Cliente c)
         {
-            Console.WriteLine($"[Generado] Cliente #{c.Id} | Cuenta: {c.Cuenta.Tipo} | " +
+           Console.WriteLine($"[Generado] Cliente #{c.Id} | Cuenta: {c.Cuenta.Tipo} | " +
                               $"Transacción: {c.Transaccion.Tipo} {(c.Transaccion.Monto > 0 ? $"{c.Transaccion.Monto:C}" : "")} | " +
                               $"Preferencial: {c.Preferencial} | Sucursal: {c.IdSucursalDestino} | Destino: {c.Destino}");
         }
@@ -215,5 +213,9 @@ namespace SimulacionSucursalesBanco.src.clases
             Console.WriteLine($"Fondos totales finales: {totalFondos:C}");
         }
 
+        public IReadOnlyList<Sucursal> GetSucursales()
+        {
+            return _sucursales.AsReadOnly();
+        }
     }
 }

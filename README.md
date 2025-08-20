@@ -1,6 +1,23 @@
 # **Simulación de Sucursales de banco**
 
-# Programación Paralela
+## Materia: 
+Programación Paralela
+ 
+## Integrantes del equipo: Grupo 1D
+
+```
+| Zelidee Güémez Henríquez      | 2023-1706 |
+| Jesus Elias Diaz Feliz        | 2023-1683 |
+| Jayfry Manuel	Guerrero Váldez | 2023-1107 |
+| Gianrobert Ramirez Dominguez  | 2023-1743 |
+```
+
+### Nombre del líder:
+Zelidee Güémez
+
+### Fecha de entrega: 20-ago.-2025
+
+---
 
 ## Índice
 
@@ -14,27 +31,14 @@
 8. [Conclusiones](#conclusiones)
 9. [Referencias](#referencias)
 10. [Anexos](#anexos)
- 
-## Integrantes del equipo: Grupo 1D
 
-| Zelidee Güémez Henríquez      | 2023-1706 |
-| Jesus Elias Diaz Feliz        | 2023-1683 |
-| Jayfry Manuel	Guerrero Váldez | 2023-1107 |
-| Gianrobert Ramirez Dominguez  | 2023-1743 |
-
-
-## Nombre del líder:
-Zelidee Güémez
-
-### Fecha de entrega: 20-ago.-2025
-
----
-
-# **Introducción**
+	---
+	
+# **1. Introducción**
 
 ## Presentación general del proyecto
 
-El presente proyecto consiste en el desarrollo de una **simulación computacional de un sistema bancario multi-sucursal**, diseñado para modelar el funcionamiento paralelo de **ventanillas físicas** y **cajeros automáticos** en la atención de clientes. Cada cliente posee una cuenta de ahorro (personal) o corriente (empresarial), y puede realizar operaciones como depósitos, retiros o consultas de saldo.
+El proyecto consiste en el desarrollo de una **simulación computacional de un sistema bancario multi-sucursal**, diseñado para modelar el funcionamiento paralelo de **ventanillas físicas** y **cajeros automáticos** en la atención de clientes. Cada cliente posee una cuenta de ahorro (personal) o corriente (empresarial), y puede realizar operaciones como depósitos, retiros o consultas de saldo.
 
 La aplicación ha sido implementada como un **sistema de consola en C#**, empleando **programación concurrente** mediante hilos (*threads*) para emular la atención simultánea en distintos puntos de servicio. El sistema gestiona **recursos compartidos** (como colas de clientes y fondos de cada sucursal) y permite **comparar distintas estrategias de paralelización**, evaluar **escalabilidad** y medir **rendimiento**, con el objetivo de optimizar tiempos de atención y uso de recursos.
 
@@ -54,9 +58,11 @@ Desarrollar una simulación bancaria multi-sucursal con capacidad de atención s
 2. Diseñar mecanismos seguros para el manejo de datos compartidos (fondos y colas de clientes).
 3. Analizar y comparar el rendimiento de diferentes estrategias de paralelización (FIFO, prioridad, ventanillas especializadas o mixtas).
 4. Evaluar la escalabilidad del sistema aumentando recursos y volumen de clientes.
-5. Obtener métricas cuantitativas de desempeño para identificar cuellos de botella.
+5. Obtener métricas cuantitativas de desempeño.
 
-## **Descripción del Problema**
+---
+
+## **2. Descripción del Problema**
 
 En un banco real, múltiples clientes esperan en filas para ser atendidos en ventanillas o cajeros automáticos. Cada punto de atención funciona de forma simultánea, pero comparte recursos como el fondo de efectivo de la sucursal o la cola de espera. Una mala distribución de estos recursos puede provocar **tiempos de espera elevados, congestión en ciertos puntos y baja eficiencia global**.
 
@@ -66,33 +72,15 @@ Se recrea el flujo de atención en sucursales bancarias, con múltiples ventanil
 
 ### Aplicación del problema en un escenario real
 
-**Aplicación real:** El modelo puede ser utilizado por bancos u otras instituciones para **probar estrategias de distribución de clientes** y detectar configuraciones más eficientes antes de aplicarlas en entornos físicos.
+El modelo puede ser utilizado por bancos u otras instituciones para **probar estrategias de distribución de clientes** y detectar configuraciones más eficientes antes de aplicarlas en entornos físicos.
 
 ### Importancia del paralelismo en la solución
 
-**Importancia del paralelismo:** El uso de hilos permite simular operaciones concurrentes y medir su impacto en métricas como tiempo promedio de espera y número de transacciones procesadas.
+El uso de hilos permite simular operaciones concurrentes y medir su impacto en métricas como tiempo promedio de espera y número de transacciones procesadas.
 
-## **Cumplimiento de los Requisitos del Proyecto
+---
 
-1. **Ejecución simultánea de múltiples tareas:**  
-   Ventanillas y cajeros son hilos independientes, atendiendo clientes en paralelo.
-
-2. **Necesidad de compartir datos entre tareas:**  
-   Los hilos comparten la cola de clientes y el fondo de la sucursal, usando sincronización para evitar condiciones de carrera.
-
-3. **Exploración de diferentes estrategias de paralelización:**  
-   Se implementan y comparan FIFO, prioridad y atención mixta.
-
-4. **Escalabilidad con más recursos:**  
-   El sistema permite aumentar sucursales, ventanillas, cajeros y clientes para pruebas de carga.
-
-5. **Métricas de evaluación del rendimiento:**  
-   Se mide tiempo promedio de espera, transacciones por minuto, tasa de éxito y uso de recursos.
-
-6. **Aplicación a un problema del mundo real:**  
-   El modelo replica dinámicas bancarias y es adaptable a otros entornos con problemas similares.
-
---- 
+## **3. Cumplimiento de los Requisitos del Proyecto**
 
 ### **Ejecución simultánea de múltiples tareas:**
 
@@ -107,9 +95,9 @@ Se recrea el flujo de atención en sucursales bancarias, con múltiples ventanil
 ### **Exploración de diferentes estrategias de paralelización:**
 
 Se comparan enfoques:
-- *FIFO* (First In, First Out)
-- Atención por prioridad (clientes preferenciales)
-- Ventanillas especializadas frente a ventanillas mixtas
+- **FIFO**: Atiende clientes en orden de llegada.
+- **Prioridad**: Da preferencia a clientes preferenciales.
+- **Mixta**: Combina FIFO y prioridad, dando un 75% de prioridad a clientes preferenciales. Esto permite evaluar cómo varía el rendimiento según la forma de asignar clientes a recursos.
 
 Esto permite evaluar cómo varía el rendimiento según la forma de asignar clientes a recursos.
 
@@ -120,7 +108,7 @@ Esto permite evaluar cómo varía el rendimiento según la forma de asignar clie
 
 ### **Métricas de evaluación del rendimiento:**
 
-- Se registran indicadores como el tiempo promedio de espera por cliente, transacciones procesadas por minuto, tasa de éxito y uso promedio de cada punto de atención.
+- Se registran indicadores como el tiempo promedio de espera por cliente, tiempo promedio de servicio, speedup, eficiencia, transacciones por hora, tasa de éxito y uso promedio de cada punto de atención.
 - Estos datos permiten comparaciones objetivas entre estrategias y escenarios.
 
 ### **Aplicación a un problema del mundo real:**
@@ -128,66 +116,120 @@ Esto permite evaluar cómo varía el rendimiento según la forma de asignar clie
 - El modelo simula con precisión un entorno bancario, replicando dinámicas de atención, colas y gestión de recursos críticos.
 - Es adaptable a otros entornos con problemas similares de concurrencia y distribución de carga.
 
-## **Diseño de la Solución**
+---
+
+## **4. Diseño de la Solución**
 
 ### Arquitectura General del Sistema
 
 La solución se basa en un modelo orientado a objetos donde cada entidad del sistema se representa mediante clases:
 
-- **Cliente**: contiene datos personales, tipo de cuenta, saldo y transacción solicitada.
-- **Cuenta**: maneja operaciones básicas (depósito, retiro, consulta).
-- **Sucursal**: administra su fondo total y la cola de clientes.
-- **Ventanilla y Cajero**: implementan la lógica de atención concurrente.
-- **Simulador**: orquesta la ejecución, creación de hilos y recopilación de métricas.
+- **Cliente**: Contiene datos personales, tipo de cuenta, saldo y transacción solicitada.
+- **Cuenta**: Maneja operaciones básicas (depósito, retiro, consulta).
+- **Sucursal**: Administra su fondo total y las colas de clientes (normales y preferenciales).
+- **Ventanilla y Cajero**: Implementan la lógica de atención concurrente.
+- **Simulador**: Orquesta la ejecución, creación de hilos y recopilación de métricas.
+- **CalculadoraMetricas**: Calcula métricas como tiempo de espera, speedup, eficiencia y transacciones por hora.
+- **Estrategias**: Definen cómo se gestionan las colas (FIFO, Prioridad, Mixta).
+
 
 ### Diagrama de Componentes y Tareas Paralelas
-
----
+En carpeta: `docs/`
 
 ### Estrategia de Paralelización utilizada
 
-- Hilos para cada ventanilla y cajero.
-- Sincronización con locks y estructuras thread-safe.
-- Estrategias configurables: FIFO, prioridad, mixta.
+- Hilos para cada ventanilla y cajero, gestionados por `Thread` y `ThreadPool`.
+- Sincronización con `lock`, `Interlocked`, `BlockingCollection` y `CancellationTokenSource` para coordinar detención.
+- Estrategias configurables: FIFO, Prioridad, Mixta.
 
 ### Herramientas y Tecnologías empleadas
 
-- **Lenguaje:** C# (.NET 8)
-- **Concurrencia:** Threads, TPL (opcional)
+- **Lenguaje:** C# 
+- **Concurrencia:** `Threads`, `System.Threading`, `System.Collections.Concurrent`.
 - **Control de versiones:** GitHub
-
+- **Pruebas**: xUnit
+  
 ---
 
-## **Implementación Técnica**
+## **5. Implementación Técnica**
 
 ### Descripción de la estructura del proyecto
 
 Organizada en carpetas `/src`, `/docs`, `/tests` y `/metrics` para separación de código, documentación, pruebas y resultados.
 
-***/
+```
+SimulacionSucursalesBanco/
+│
+├── /src
+│   ├── clases/
+│   │    ├── Ventanilla.cs
+│   │    ├── Cajero.cs
+│   │    ├── Sucursal.cs
+│   │    ├── Cuenta.cs
+│   │    ├── Cliente.cs
+│   │    ├── Simulador.cs
+│   │    └── Transaccion.cs    
+│   ├── main.cs                  
+│   ├── CalculadoraMetricas.cs 
+│   ├── EstrategiaFIFO.cs
+│   ├── EstrategiaMixta.cs
+│   ├── EstrategiaPrioridad.cs
+│   ├── IEstrategiaAtencion.cs
+│
+├── /tests
+│   ├── TestCola.cs
+│   ├── TestTransacciones.cs
+│   ├── TestConcurrencia.cs
+│   ├── TestUtils.cs
+│   ├── PruebasUnitarias.cs
+│
+├── /metrics
+│
+├── /docs
+│   ├── especificacion.md
+│   ├── manual_usuario.md
+│   ├── escenarios_simulacion.md
+│   └── diagrama_UML.png
+│
+├── Program.cs    
+├── SimulacionSucursalesBanco.csproj
+├── README.md
+└── .gitignore
+```
 
 ### Explicación del código clave
+- **main.cs**: Interfaz de consola para configurar y ejecutar la simulación.
+- **Simulador.cs**: Gestiona hilos, genera clientes con retraso fijo de 10ms y recopila métricas.
+- **CalculadoraMetricas.cs**: Calcula métricas avanzadas (speedup, eficiencia, transacciones/hora).
+- **Sucursal.cs**: Valida fondos y gestiona colas con `BlockingCollection`.
+- *Estrategias*: Implementan `IEstrategiaAtencion` para FIFO, Prioridad y Mixta (75% prioridad).
 
 ### Uso de mecanismos de sincronización
+- `lock` para proteger `_fondos` en `Sucursal.cs`.
+- `Interlocked` para contadores de métricas.
+- `BlockingCollection` para colas thread-safe.
+- `CancellationTokenSource` para coordinar detención de hilos.
 
 ### Justificación técnica de las decisiones tomadas
 
 - Se eligió C# por su manejo robusto de la concurrencia y la facilidad para implementar estructuras seguras.
 - Se usó consola para poder centrarse en el modelo lógico y no en la interfaz gráfica, priorizando rendimiento y simplicidad de pruebas.
 
+---
 
-## **Evaluación de Desempeño**
+## **6. Evaluación de Desempeño**
 ###	Comparativa entre ejecución secuencial y paralela
 ###	Métricas: tiempo de ejecución, eficiencia, escalabilidad
 ###	Gráficas o tablas con resultados
 ###	Análisis de cuellos de botella o limitaciones
 
+---
 
-## **Trabajo en Equipo**
+## **7. Trabajo en Equipo**
 
 ### Descripción del reparto de tareas
 
-  Dev 1: Gianrobert – Entidades y operaciones bancarias
+  #### Dev 1: Gianrobert – Entidades y operaciones bancarias
 
 **Tareas principales:**
 - Diseñar y programar las clases `Cliente`, `Cajero`, `Simulador`, `Sucursal` y `Ventanilla`.
@@ -202,7 +244,7 @@ Organizada en carpetas `/src`, `/docs`, `/tests` y `/metrics` para separación d
 - `/src/Ventanilla.cs`
 
 
-  Dev 2: Jesus Elias – Concurrencia y gestión de hilos
+ #### Dev 2: Jesus Elias – Concurrencia y gestión de hilos
 
 **Tareas principales:**
 - Diseñar y programar las clases `Cuenta` y `Transaccion`.
@@ -222,7 +264,7 @@ Organizada en carpetas `/src`, `/docs`, `/tests` y `/metrics` para separación d
 - `/src/Ventanilla.cs`
 
 
-   Dev 3: Jayfry – Estrategias de atención y métricas
+  #### Dev 3: Jayfry – Estrategias de atención y métricas
 
 **Tareas principales:**
 - Programar estrategias de atención: FIFO, prioridad, ventanillas mixtas o especializadas.
@@ -235,7 +277,7 @@ Organizada en carpetas `/src`, `/docs`, `/tests` y `/metrics` para separación d
 - `/metrics/resultados_fifo.txt`
 
 
-  Dev 4: Zelidee – Pruebas, simulación paralela y gestión de Git
+ #### Dev 4: Zelidee – Pruebas, simulación paralela y gestión de Git
 
 **Tareas principales:**
 - Diseñar pruebas unitarias para entidades, concurrencia y estrategias.
@@ -254,100 +296,39 @@ Organizada en carpetas `/src`, `/docs`, `/tests` y `/metrics` para separación d
 - `readme.md`
 - `/src/main.cs`
 
----
-
 ### Herramientas utilizadas para coordinación
 
 GitHub para manejo de repositorio y tareas por del proyecto por integrante.
 
+---
 
-## **Conclusiones**
+## **8. Conclusiones**
 
 ### Principales aprendizajes técnicos
+- Implementación de concurrencia con hilos y sincronización.
+- Diseño de estrategias de atención para optimizar colas.
+- Cálculo de métricas avanzadas para evaluar paralelismo.
 
 ### Retos enfrentados y superados
 
+
 ### Posibles mejoras o líneas futuras
 
+---
 
-## **Referencias**
+## **9. Referencias**
 
 ### Fuentes bibliográficas, técnicas o académicas consultadas
 
+---
 
-## **Anexos**
+## **10. Anexos**
 
 ### Manual de ejecución del sistema
-docs/manual_usuario.md
+Ir a: `docs/manual_usuario.md`
 
 ### Capturas adicionales, pruebas complementarias
+Ir a: `tests/` y `docs/`
 
-### Enlace al repositorio de Git (público): https://github.com/lovecrimecode/SimulacionSucursalesBanco
-
-
-# Control y Evaluación
-
-## Reglas de Entrega en Git (2ptos):
-
-- Repositorio público: https://github.com/lovecrimecode/SimulacionSucursalesBanco
-
-### Estructura mínima del repositorio:
-
-```
-SimulacionSucursalesBanco/
-│
-├── /docs                 # Documentación del proyecto
-│
-├── /src                  # Código fuente
-│
-├── /tests                # Pruebas unitarias
-│
-└── /metrics              # Resultados de comparativas
-
-```
-
-## **Repartición de tareas (por roles)**
-
-### **Cada miembro** debe:
-
-Subir al menos 3 *commits significativos* (implementación o documentación) en las semanas de clases.
-
-### Usar su nombre en los *commits,* identificar con Co-authored-by-<nombreApellidoEnPascalCase>
-
-## Evaluación del trabajo en equipo (3ptos)
-
-Cada elección debe ser una escala entre: No satisfactorio, Satisfactorio, Bueno, Muy bueno
-
-**Por el líder:**
-
-- Evalúa a cada miembro en 3 aspectos:
-    - Compromiso y responsabilidad
-    - Calidad de su código / contribuciones
-    - Colaboración y comunicación
-
-**Entre miembros:**
-
-- Cada miembro evalúa a los otros según:
-    - Ayuda en resolución de problemas
-    - Participación en decisiones
-    - Claridad en la comunicación
-
-**Miembros al líder:**
-
-- Evalúan en:
-    - Organización y delegación de tareas
-    - Resolución de conflictos
-    - Apoyo técnico y emocional
-
-# Exposición. 10ptos.
-
-| **Criterio** | **Descripción** | **Puntos** |
-| --- | --- | --- |
-| **1. Claridad en la explicación del problema (tema elegido)** | El equipo explica claramente el contexto, la importancia del problema y por qué fue elegido. | 1 |
-| **2. Dominio técnico del tema** | Se demuestra comprensión profunda del paralelismo, sincronización, y estrategias aplicadas en su solución. | 1 |
-| **3. Presentación del diseño y arquitectura** | El diseño está bien explicado, visualmente apoyado (diagrama), y se entienden las decisiones técnicas. | 1 |
-| **4. Demostración del funcionamiento del sistema** | El código se muestra funcionando, se explican los fragmentos relevantes y hay claridad en la ejecución. | 5 |
-| **5. Interpretación de resultados y métricas** | Se explican los resultados de forma clara con comparativas significativas (secuencial vs paralela). | 1 |
-| **6. Gestión del tiempo** | La exposición se ajusta al tiempo máximo sin omitir ni extender innecesariamente. | 1 |
-
-El líder del equipo debe asegurar el cumplimiento de cada sección descrita en este documento.
+### Enlace al repositorio de Git (público): 
+https://github.com/lovecrimecode/SimulacionSucursalesBanco

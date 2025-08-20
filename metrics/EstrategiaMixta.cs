@@ -1,12 +1,12 @@
-using SimulacionSucursalesBanco.src.clases;
 using System.Collections.Generic;
 
 namespace SimulacionSucursalesBanco
 {
-    public class EstrategiaMixta
+    public class EstrategiaMixta : IEstrategiaAtencion
     {
         private Queue<Cliente> colaFIFO = new Queue<Cliente>();
         private EstrategiaPrioridad estrategiaPrioridad = new EstrategiaPrioridad();
+        private readonly Random random = new Random();
 
         // Agrega un cliente a la estrategia correspondiente
         public void AgregarCliente(Cliente cliente)
@@ -26,26 +26,21 @@ namespace SimulacionSucursalesBanco
         // Atender al siguiente cliente según la estrategia mixta
         public Cliente? AtenderCliente()
         {
-            // Prioridad a clientes preferenciales
-            if (estrategiaPrioridad.CantidadEnCola() > 0)
+            if (estrategiaPrioridad.CantidadEnCola() > 0 && (colaFIFO.Count == 0 || random.NextDouble() < 0.75))
             {
                 return estrategiaPrioridad.AtenderCliente();
             }
-
-            // Si no hay preferenciales, atiende al primero en FIFO
-            if (colaFIFO.Count > 0)
-            {
-                return colaFIFO.Dequeue();
-            }
-
-            // No hay clientes
-            return null;
+            return colaFIFO.Count > 0 ? colaFIFO.Dequeue() : null;
         }
 
-        // Saber cuántos clientes quedan en la cola
-        public int CantidadTotalClientes()
+        public bool TieneClientes()
+        {
+            return colaFIFO.Count > 0 || estrategiaPrioridad.TieneClientes();
+        }
+
+        public int CantidadEnCola()
         {
             return colaFIFO.Count + estrategiaPrioridad.CantidadEnCola();
         }
     }
-}
+    }

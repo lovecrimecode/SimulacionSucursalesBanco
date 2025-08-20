@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimulacionSucursalesBanco.src.clases
+namespace SimulacionSucursalesBanco
 {
     public enum TipoTransaccion
     {
@@ -23,7 +23,7 @@ namespace SimulacionSucursalesBanco.src.clases
         public decimal Monto { get; }
         public EstadoTransaccion Estado { get; private set; }
 
-        // Registro de auditoría
+        // Registro
         public DateTime Creacion { get; }
         public DateTime? Ejecucion { get; private set; }
         public PuntoAtencion? PuntoAtencion { get; private set; }
