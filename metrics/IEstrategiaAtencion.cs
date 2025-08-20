@@ -1,5 +1,3 @@
-using SimulacionSucursalesBanco;
-
 namespace SimulacionSucursalesBanco
 {
     public interface IEstrategiaAtencion
@@ -7,5 +5,6 @@ namespace SimulacionSucursalesBanco
         void AgregarCliente(Cliente cliente);
         Cliente AtenderCliente();
         bool TieneClientes();
+        int CantidadEnCola();
     }
 }

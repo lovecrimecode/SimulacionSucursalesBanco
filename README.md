@@ -17,11 +17,12 @@
  
 ## Integrantes del equipo: Grupo 1D
 
+```
 | Zelidee Güémez Henríquez      | 2023-1706 |
 | Jesus Elias Diaz Feliz        | 2023-1683 |
 | Jayfry Manuel	Guerrero Váldez | 2023-1107 |
 | Gianrobert Ramirez Dominguez  | 2023-1743 |
-
+```
 
 ## Nombre del líder:
 Zelidee Güémez
@@ -164,7 +165,44 @@ La solución se basa en un modelo orientado a objetos donde cada entidad del sis
 
 Organizada en carpetas `/src`, `/docs`, `/tests` y `/metrics` para separación de código, documentación, pruebas y resultados.
 
-***/
+```
+SimulacionSucursalesBanco/
+│
+├── /src
+│   ├── clases/
+│   │    ├── Ventanilla.cs
+│   │    ├── Cajero.cs
+│   │    ├── Sucursal.cs
+│   │    ├── Cuenta.cs
+│   │    ├── Cliente.cs
+│   │    ├── Simulador.cs
+│   │    └── Transaccion.cs    
+│   ├── main.cs                  
+│   ├── CalculadoraMetricas.cs 
+│   ├── EstrategiaFIFO.cs
+│   ├── EstrategiaMixta.cs
+│   ├── EstrategiaPrioridad.cs
+│   ├── IEstrategiaAtencion.cs
+│
+├── /tests
+│   ├── test_cola.cs
+│   ├── test_transacciones.cs
+│   ├── test_concurrencia.cs
+│   ├── TestUtils.cs
+│   ├── PruebasUnitarias.cs
+│
+├── /metrics
+│
+├── /docs
+│   ├── especificacion.md
+│   ├── manual_usuario.md
+│   ├── escenarios_simulacion.md
+│
+├── Program.cs    
+├── SimulacionSucursalesBanco.csproj
+├── README.md
+└── .gitignore
+```
 
 ### Explicación del código clave
 
@@ -187,7 +225,7 @@ Organizada en carpetas `/src`, `/docs`, `/tests` y `/metrics` para separación d
 
 ### Descripción del reparto de tareas
 
-  Dev 1: Gianrobert – Entidades y operaciones bancarias
+  #### Dev 1: Gianrobert – Entidades y operaciones bancarias
 
 **Tareas principales:**
 - Diseñar y programar las clases `Cliente`, `Cajero`, `Simulador`, `Sucursal` y `Ventanilla`.
@@ -202,7 +240,7 @@ Organizada en carpetas `/src`, `/docs`, `/tests` y `/metrics` para separación d
 - `/src/Ventanilla.cs`
 
 
-  Dev 2: Jesus Elias – Concurrencia y gestión de hilos
+ #### Dev 2: Jesus Elias – Concurrencia y gestión de hilos
 
 **Tareas principales:**
 - Diseñar y programar las clases `Cuenta` y `Transaccion`.
@@ -222,7 +260,7 @@ Organizada en carpetas `/src`, `/docs`, `/tests` y `/metrics` para separación d
 - `/src/Ventanilla.cs`
 
 
-   Dev 3: Jayfry – Estrategias de atención y métricas
+  #### Dev 3: Jayfry – Estrategias de atención y métricas
 
 **Tareas principales:**
 - Programar estrategias de atención: FIFO, prioridad, ventanillas mixtas o especializadas.
@@ -235,7 +273,7 @@ Organizada en carpetas `/src`, `/docs`, `/tests` y `/metrics` para separación d
 - `/metrics/resultados_fifo.txt`
 
 
-  Dev 4: Zelidee – Pruebas, simulación paralela y gestión de Git
+ #### Dev 4: Zelidee – Pruebas, simulación paralela y gestión de Git
 
 **Tareas principales:**
 - Diseñar pruebas unitarias para entidades, concurrencia y estrategias.
@@ -278,9 +316,10 @@ GitHub para manejo de repositorio y tareas por del proyecto por integrante.
 ## **Anexos**
 
 ### Manual de ejecución del sistema
-docs/manual_usuario.md
+`docs/manual_usuario.md`
 
 ### Capturas adicionales, pruebas complementarias
+`tests/`
 
 ### Enlace al repositorio de Git (público): https://github.com/lovecrimecode/SimulacionSucursalesBanco
 
@@ -289,7 +328,7 @@ docs/manual_usuario.md
 
 ## Reglas de Entrega en Git (2ptos):
 
-- Repositorio público: https://github.com/lovecrimecode/SimulacionSucursalesBanco
+Repositorio público: https://github.com/lovecrimecode/SimulacionSucursalesBanco
 
 ### Estructura mínima del repositorio:
 
@@ -307,47 +346,3 @@ SimulacionSucursalesBanco/
 ```
 
 ## **Repartición de tareas (por roles)**
-
-### **Cada miembro** debe:
-
-Subir al menos 3 *commits significativos* (implementación o documentación) en las semanas de clases.
-
-### Usar su nombre en los *commits,* identificar con Co-authored-by-<nombreApellidoEnPascalCase>
-
-## Evaluación del trabajo en equipo (3ptos)
-
-Cada elección debe ser una escala entre: No satisfactorio, Satisfactorio, Bueno, Muy bueno
-
-**Por el líder:**
-
-- Evalúa a cada miembro en 3 aspectos:
-    - Compromiso y responsabilidad
-    - Calidad de su código / contribuciones
-    - Colaboración y comunicación
-
-**Entre miembros:**
-
-- Cada miembro evalúa a los otros según:
-    - Ayuda en resolución de problemas
-    - Participación en decisiones
-    - Claridad en la comunicación
-
-**Miembros al líder:**
-
-- Evalúan en:
-    - Organización y delegación de tareas
-    - Resolución de conflictos
-    - Apoyo técnico y emocional
-
-# Exposición. 10ptos.
-
-| **Criterio** | **Descripción** | **Puntos** |
-| --- | --- | --- |
-| **1. Claridad en la explicación del problema (tema elegido)** | El equipo explica claramente el contexto, la importancia del problema y por qué fue elegido. | 1 |
-| **2. Dominio técnico del tema** | Se demuestra comprensión profunda del paralelismo, sincronización, y estrategias aplicadas en su solución. | 1 |
-| **3. Presentación del diseño y arquitectura** | El diseño está bien explicado, visualmente apoyado (diagrama), y se entienden las decisiones técnicas. | 1 |
-| **4. Demostración del funcionamiento del sistema** | El código se muestra funcionando, se explican los fragmentos relevantes y hay claridad en la ejecución. | 5 |
-| **5. Interpretación de resultados y métricas** | Se explican los resultados de forma clara con comparativas significativas (secuencial vs paralela). | 1 |
-| **6. Gestión del tiempo** | La exposición se ajusta al tiempo máximo sin omitir ni extender innecesariamente. | 1 |
-
-El líder del equipo debe asegurar el cumplimiento de cada sección descrita en este documento.

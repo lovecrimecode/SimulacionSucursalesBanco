@@ -1,10 +1,9 @@
-using SimulacionSucursalesBanco;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SimulacionSucursalesBanco
 {
-    public class EstrategiaPrioridad
+    public class EstrategiaPrioridad : IEstrategiaAtencion
     {
         private List<Cliente> cola = new List<Cliente>();
 
@@ -33,6 +32,7 @@ namespace SimulacionSucursalesBanco
             return clienteNormal;
         }
 
-        public int CantidadEnCola() => cola.Count;
+        public bool TieneClientes() => cola.Count > 0;
+        public int CantidadEnCola() => cola.Count;       
     }
 }

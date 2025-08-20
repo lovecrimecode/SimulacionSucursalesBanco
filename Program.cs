@@ -6,14 +6,24 @@ namespace SimulacionSucursalesBanco
     {
         static void Main(string[] args)
         {
-            try
+            Console.WriteLine("Seleccione modo:");
+            Console.WriteLine("1. Pruebas unitarias");
+            Console.WriteLine("2. Simulación / Métricas");
+            var opcion = Console.ReadLine();
+            if (opcion == "1")
             {
+                Console.WriteLine("Ejecutando pruebas unitarias...");
+                PruebasUnitarias.RunAll();
+            }
+            else if (opcion == "2")
+            {
+                Console.WriteLine("Ejecutando simulación...");
                 var app = new MainApp();
                 app.IniciarSimulacion();
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine("Opción inválida");
             }
             Console.WriteLine("\nPresione una tecla para salir...");
             Console.ReadKey();

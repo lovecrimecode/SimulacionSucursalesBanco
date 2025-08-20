@@ -1,4 +1,3 @@
-using SimulacionSucursalesBanco;
 using System.Collections.Generic;
 
 namespace SimulacionSucursalesBanco
@@ -12,13 +11,20 @@ namespace SimulacionSucursalesBanco
             if (cliente != null)
                 cola.Enqueue(cliente);
         }
+
         public Cliente? AtenderCliente()
         {
             return cola.Count > 0 ? cola.Dequeue() : null;
         }
+
         public bool TieneClientes()
         {
             return cola.Count > 0;
+        }
+
+        public int CantidadEnCola()
+        {
+            return cola.Count;
         }
     }
 }
