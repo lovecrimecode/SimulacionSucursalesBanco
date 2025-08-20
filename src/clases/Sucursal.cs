@@ -73,7 +73,7 @@ namespace SimulacionSucursalesBanco
         {
             if (estrategia == EstrategiaAtencion.Mixta)
             {
-                if (new Random().NextDouble() < 0.5 && _colaVentanillaPrio.TryTake(out var prio, 5, ct)) return prio;
+                if (new Random().NextDouble() < 0.75 && _colaVentanillaPrio.TryTake(out var prio, 5, ct)) return prio;
                 return _colaVentanilla.Take(ct);
             }
             else if (estrategia == EstrategiaAtencion.Prioridad)

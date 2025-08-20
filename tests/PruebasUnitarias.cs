@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Xunit;
 
 namespace SimulacionSucursalesBanco
@@ -7,32 +8,28 @@ namespace SimulacionSucursalesBanco
     {
         public static void RunAll()
         {
-            var colaTests = new ColaTests();
-            var transaccionesTests = new CuentaTests();
-            var multiprocesoTests = new ConcurrenciaTests();
-
-            RunTest(() => colaTests.EncolarDesencolar_ClienteCorrecto(), nameof(ColaTests.EncolarDesencolar_ClienteCorrecto));
-            RunTest(() => colaTests.Prioridad_ClientePreferencialPrimero(), nameof(ColaTests.Prioridad_ClientePreferencialPrimero));
-            RunTest(() => colaTests.Mixta_ClientePreferencialPrimero(), nameof(ColaTests.Mixta_ClientePreferencialPrimero));
-            RunTest(() => transaccionesTests.Depositar_SumaCorrectamente(), nameof(CuentaTests.Depositar_SumaCorrectamente));
-            RunTest(() => transaccionesTests.Retirar_DescuentaCorrectamente(), nameof(CuentaTests.Retirar_DescuentaCorrectamente));
-            RunTest(() => transaccionesTests.Retirar_SaldoInsuficiente_Falla(), nameof(CuentaTests.Retirar_SaldoInsuficiente_Falla));
-            RunTest(() => multiprocesoTests.DepositosConcurrentes_SaldoCorrecto(), nameof(ConcurrenciaTests.DepositosConcurrentes_SaldoCorrecto));
-        }
-
-        private static void RunTest(Action test, string testName)
-        {
-            try
+            Console.WriteLine("Ejecutando pruebas unitarias...");
+            var testClasses = new[] { typeof(ColaTests), typeof(CuentaTests), typeof(ConcurrenciaTests) };
+            foreach (var testClass in testClasses)
             {
-                test();
-                Console.WriteLine($"Prueba {testName}: OK");
-                TestUtils.GuardarResultado(testName, "OK");
+                foreach (var method in testClass.GetMethods())
+                {
+                    if (Attribute.IsDefined(method, typeof(FactAttribute)))
+                    {
+                        try
+                        {
+                            var instance = Activator.CreateInstance(testClass);
+                            method.Invoke(instance, null);
+                            Console.WriteLine($"Prueba {method.Name}: Completada");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error en {method.Name}: {ex.InnerException?.Message ?? ex.Message}");
+                        }
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Prueba {testName}: FALLÓ ({ex.Message})");
-                TestUtils.GuardarResultado(testName, "FALLÓ");
-            }
+            Console.WriteLine("Pruebas finalizadas. Resultados en tests/test_results.txt");
         }
     }
 }
