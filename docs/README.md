@@ -167,14 +167,9 @@ SimulacionSucursalesBanco/
 │   │    ├── Sucursal.cs
 │   │    ├── Cuenta.cs
 │   │    ├── Cliente.cs
-│   │    ├── Simulador.cs
 │   │    └── Transaccion.cs    
+│   ├── Simulador.cs
 │   ├── main.cs                  
-│   ├── CalculadoraMetricas.cs 
-│   ├── EstrategiaFIFO.cs
-│   ├── EstrategiaMixta.cs
-│   ├── EstrategiaPrioridad.cs
-│   ├── IEstrategiaAtencion.cs
 │
 ├── /tests
 │   ├── TestCola.cs
@@ -184,16 +179,21 @@ SimulacionSucursalesBanco/
 │   ├── PruebasUnitarias.cs
 │
 ├── /metrics
+│   ├── CalculadoraMetricas.cs 
+│   ├── EstrategiaFIFO.cs
+│   ├── EstrategiaMixta.cs
+│   ├── EstrategiaPrioridad.cs
+│   ├── IEstrategiaAtencion.cs
 │
 ├── /docs
 │   ├── especificacion.md
 │   ├── manual_usuario.md
-│   ├── escenarios_simulacion.md
-│   └── diagrama_UML.png
+│   ├── Diagrama de Componentes.png
+|   ├── README.md
+│   └── diagrama.docx
 │
 ├── Program.cs    
 ├── SimulacionSucursalesBanco.csproj
-├── README.md
 └── .gitignore
 ```
 
@@ -222,6 +222,7 @@ SimulacionSucursalesBanco/
 ###	Métricas: tiempo de ejecución, eficiencia, escalabilidad
 ###	Gráficas o tablas con resultados
 ###	Análisis de cuellos de botella o limitaciones
+Ir a: `tests/` y `docs/`
 
 ---
 
@@ -286,13 +287,11 @@ SimulacionSucursalesBanco/
 - Manejar el repositorio y los commits del proyecto.
 
 **Documentos trabajados:**
-- `/tests/test_transacciones.cs`
-- `/tests/test_concurrencia.cs`
+- `/tests/TestTransacciones.cs`
+- `/tests/TestConcurrencia.cs`
 - `/tests/TestUtils.cs`
 - `/docs/manual_usuario.md`
 - `/docs/especificacion.md`
-- `/docs/escenarios_simulacion_.md`
-- `/docs/resultados_pruebas.txt`
 - `readme.md`
 - `/src/main.cs`
 
@@ -311,14 +310,52 @@ GitHub para manejo de repositorio y tareas por del proyecto por integrante.
 
 ### Retos enfrentados y superados
 
+1. **Sincronización y concurrencia**
+
+   * Problemas para manejar múltiples clientes asignados a varios cajeros en paralelo.
+   * Requerimiento de implementar **colas de espera** y evitar condiciones de carrera.
+
+2. **Medición de métricas**
+
+   * Dificultad en definir correctamente las fórmulas de **speedup** y **eficiencia**.
+   * Requiere normalizar tiempos entre ejecución secuencial y ejecución paralela.
+
+3. **Diseño modular del proyecto**
+
+   * Separación clara de pruebas unitarias y simulación real para evitar mezclas de lógica.
+   * Necesidad de establecer valores por defecto para evitar errores en ejecución.
+
+4. **Escalabilidad**
+
+   * Al aumentar el número de clientes o procesadores, el sistema se vuelve más complejo.
+   * Se consideró necesario usar **estrategias de planificación** (FIFO, prioridad, mixta).
 
 ### Posibles mejoras o líneas futuras
+1. **Optimización de Estrategias**:
+   - Implementar una estrategia adaptativa que ajuste dinámicamente la probabilidad (actualmente 75% en Mixta) según la carga de clientes preferenciales y normales.
+
+2. **Mejoras en Escalabilidad**:
+   - Integrar un balanceador de carga para distribuir clientes entre sucursales según la capacidad de cada una, modificando `Simulador.cs` para asignar clientes de manera más inteligente.
+   - Usar `Parallel.For` o `PLINQ` en lugar de hilos explícitos para ciertas operaciones (e.g., procesamiento de métricas), reduciendo la sobrecarga de gestión de hilos.
+
+3. **Interfaz de Usuario**:
+   - Desarrollar una interfaz gráfica para visualizar métricas en tiempo real (tiempo de espera, transacciones/hora) y permitir configurar parámetros (`main.cs`) sin entrada por consola.
+   - Generar gráficos interactivos en `/docs` para comparar estrategias visualmente, complementando `/metrics/estrategia_*.txt`.
+
+4. **Pruebas Más Robustas**:
+   - Ampliar `test_multiproceso.cs` para incluir pruebas de estrés con cientos de clientes concurrentes.
+   - Añadir pruebas en `test_transacciones.cs` para validar transacciones mixtas (depósito + retiro simultáneos) en la misma cuenta.
 
 ---
 
 ## **9. Referencias**
 
 ### Fuentes bibliográficas, técnicas o académicas consultadas
+- **Microsoft Docs**. (2023). "Task Parallel Library (TPL)". Recuperado de: https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/task-parallel-library-tpl
+Usado para aprender sobre `Task`, `ThreadPool`, y `CancellationTokenSource`.
+
+- **xUnit**. (2023). "Getting Started with xUnit.net". Recuperado de: https://xunit.net/  
+Usado para configurar pruebas unitarias.
 
 ---
 
