@@ -5,7 +5,7 @@ using SimulacionSucursalesBanco;
     public sealed class Cliente
     {
         public int Id { get; }
-        public bool Preferencial { get; } // prioridad en la cola
+        public bool Preferencial { get; } // prioridad en la 
         public DateTime Llegada { get; }
         public DateTime? InicioAtencion { get; set; }
         public DateTime? FinAtencion { get; set; }
