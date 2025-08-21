@@ -16,7 +16,7 @@ namespace SimulacionSucursalesBanco {
         private readonly object _lockObj = new object(); // Para sincronización
         public int IdCuenta { get; private set; }
         public string Titular { get; private set; }
-        public TipoCuenta Tipo { get; private set; } // NUEVO
+        public TipoCuenta Tipo { get; private set; } 
         private decimal _balance;
 
         public Cuenta(int idCuenta, string titular, TipoCuenta tipo, decimal balanceInicial = 0)
